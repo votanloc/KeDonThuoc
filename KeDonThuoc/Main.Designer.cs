@@ -35,17 +35,18 @@
             // btnKeDonThuoc
             // 
             btnKeDonThuoc.Location = new Point(234, 179);
-            btnKeDonThuoc.Margin = new Padding(4, 4, 4, 4);
+            btnKeDonThuoc.Margin = new Padding(4);
             btnKeDonThuoc.Name = "btnKeDonThuoc";
             btnKeDonThuoc.Size = new Size(153, 102);
             btnKeDonThuoc.TabIndex = 0;
             btnKeDonThuoc.Text = "Kê Đơn Thuốc";
             btnKeDonThuoc.UseVisualStyleBackColor = true;
+            btnKeDonThuoc.Click += btnKeDonThuoc_Click;
             // 
             // btnDoanhThu
             // 
             btnDoanhThu.Location = new Point(490, 192);
-            btnDoanhThu.Margin = new Padding(4, 4, 4, 4);
+            btnDoanhThu.Margin = new Padding(4);
             btnDoanhThu.Name = "btnDoanhThu";
             btnDoanhThu.Size = new Size(152, 76);
             btnDoanhThu.TabIndex = 1;
@@ -60,7 +61,7 @@
             Controls.Add(btnDoanhThu);
             Controls.Add(btnKeDonThuoc);
             Font = new Font("Times New Roman", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
-            Margin = new Padding(4, 4, 4, 4);
+            Margin = new Padding(4);
             Name = "Main";
             Text = "Main";
             ResumeLayout(false);
