@@ -330,6 +330,7 @@
             // comboBox1
             // 
             comboBox1.FormattingEnabled = true;
+            comboBox1.Items.AddRange(new object[] { "Nam", "Nữ" });
             comboBox1.Location = new Point(176, 175);
             comboBox1.Name = "comboBox1";
             comboBox1.Size = new Size(121, 35);
