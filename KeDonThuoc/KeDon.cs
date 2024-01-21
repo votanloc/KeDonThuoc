@@ -12,6 +12,7 @@ using System.Data.SqlClient;
 using Microsoft.Data.SqlClient;
 using Microsoft.VisualBasic;
 using System.Text.RegularExpressions;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace KeDonThuoc
 {
@@ -55,7 +56,7 @@ namespace KeDonThuoc
 
         private void LoadDanhSach()
         {
-            string query = "select * from Benhnhan";
+            string query = "select benhnhan.mabn, benhnhan.hoten, benhnhan.tuoi, benhnhan.gioitinh, benhnhan.sdt,benhnhan.diachi from Benhnhan join lichsu on benhnhan.mabn = lichsu.mabn";
             using (SqlConnection connection = new SqlConnection(ConnectionString.connectionString))
             {
                 try
@@ -78,12 +79,29 @@ namespace KeDonThuoc
                 }
             }
         }
+
+        private void LoadLichsu()
+        {
+            string query = "select ngaylapphieu from lichsu where mabn = '"+tbMABN+"'";
+            using (SqlConnection connection = new SqlConnection(ConnectionString.connectionString))
+            {
+                connection.Open();
+                SqlCommand command = new SqlCommand(query, connection);
+                SqlDataReader reader = command.ExecuteReader();
+                // Thêm dữ liệu vào ListView
+                //listLichSu.Items.Add(reader["Ngay lap phieu"].ToString("dd/MM/yyyy"));
+
+                // Đóng kết nối đến cơ sở dữ liệu SQL
+                connection.Close();
+            }
+        }
         private void dinhdangluoi()
         {
             dataviewBenhNhan.ReadOnly = true;
             dataviewBenhNhan.Columns[0].Visible = false;
             dataviewBenhNhan.Columns[1].HeaderText = "Họ và Tên";
             dataviewBenhNhan.Columns[1].Width = 180;
+            dataviewBenhNhan.Columns[1].DefaultCellStyle.Format = "";
             dataviewBenhNhan.Columns[2].HeaderText = "Tuổi";
             dataviewBenhNhan.Columns[2].Width = 50;
 
@@ -97,12 +115,18 @@ namespace KeDonThuoc
 
         private void btnTaiKham_Click(object sender, EventArgs e)
         {
-
+            btnLuu_Click(sender, e);
         }
 
         private void btnNhapMoi_Click(object sender, EventArgs e)
         {
             tbMABN.BackColor = SystemColors.Info;
+            tbMABN.Text = "";
+            tbHoTen.Text = "";
+            cbGioiTInh.Text = "Nam";
+            tbTuoi.Text = "";
+            tbSDT.Text = "";
+            tbDiaChi.Text = "";
             tbHoTen.Focus();
             btnLuu.Enabled = true;
         }
@@ -111,7 +135,7 @@ namespace KeDonThuoc
         {
             if (e.KeyChar == 13)
             {
-                tbHoTen.Text = tbHoTen.Text.ToUpper();
+                tbHoTen.Text = tbHoTen.Text.ToUpper().Trim();
                 cbGioiTInh.Focus();
             }
         }
@@ -181,9 +205,8 @@ namespace KeDonThuoc
                 SqlCommand command = new SqlCommand(query, connection);
                 command.ExecuteNonQuery();
                 int maxValue = (int)command.ExecuteScalar();
-                int newValue = maxValue + 1;
-                return newValue;
-                //return MABN_MOI = newValue;
+                int new_mabn = maxValue + 1;
+                return new_mabn;
             }
         }
         //public int MABN_MOI;
@@ -192,31 +215,55 @@ namespace KeDonThuoc
             // nếu mã bn rỗng tạo mã bn mới
             if (tbMABN.Text == "") 
             {
-                int newValue = TaoMABN();
-                MessageBox.Show(newValue.ToString());
+                int new_mabn = TaoMABN();
+                // thêm bn
+                using (SqlConnection connection = new SqlConnection(ConnectionString.connectionString))
+                {
+                    string query = "insert into benhnhan values (@MABN,@HOTEN,@TUOI,@GIOITINH,@SDT,@DIACHI)";
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(query, connection);
+                    command.Parameters.AddWithValue("@MABN", new_mabn.ToString().Trim());
+                    command.Parameters.AddWithValue("@HOTEN", tbHoTen.Text.Trim());
+                    command.Parameters.AddWithValue("@TUOI",tbTuoi.Text.Trim());
+                    command.Parameters.AddWithValue("@GIOITINH",cbGioiTInh.Text.Trim());
+                    command.Parameters.AddWithValue("@SDT",tbSDT.Text.Trim());
+                    command.Parameters.AddWithValue("@DIACHI",tbDiaChi.Text.Trim());
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
+                using (SqlConnection connection = new SqlConnection(ConnectionString.connectionString))
+                {
+                    string query = "insert into lichsu (MABN,Ngaylapphieu) values (@MABN, getdate())";
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(query, connection);
+                    command.Parameters.AddWithValue("@MABN", new_mabn.ToString());
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
             }
             // tạo thêm lịch sử
             else
             {
-                
-            }
-            
-            // kiểm tra mã bn có chưa
-            /*string query = "insert into";
-            using (SqlConnection connection = new SqlConnection(ConnectionString.connectionString))
-            {
-                SqlCommand command = new SqlCommand(query, connection);
-                SqlDataReader reader = command.ExecuteReader();
-                // không tồn tại
-                if (!reader.Read())
+                using (SqlConnection connection = new SqlConnection(ConnectionString.connectionString))
                 {
-
+                    string query = "insert into lichsu (MABN,Ngaylapphieu) values (@MABN, getdate())";
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(query, connection);
+                    command.Parameters.AddWithValue("@MABN", tbMABN.Text.Trim());
+                    command.ExecuteNonQuery();
+                    connection.Close();
                 }
-                else 
-                { 
-                
-                }
-            }*/
+            }
+            tbMABN.Text = "";
+            tbHoTen.Text = "";
+            cbGioiTInh.Text = "Nam";
+            tbTuoi.Text = "";
+            tbSDT.Text = "";
+            tbDiaChi.Text = "";
+            btnLuu.Enabled = false;
+            tbMABN.BackColor = SystemColors.Control;
+            btnNhapMoi.Focus();
+            LoadDanhSach();
         }
 
         private void dataviewBenhNhan_MouseClick(object sender, MouseEventArgs e)
@@ -226,9 +273,15 @@ namespace KeDonThuoc
 
         private void dataviewBenhNhan_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
+            //select benhnhan.mabn, benhnhan.hoten, benhnhan.tuoi, benhnhan.gioitinh, benhnhan.sdt,benhnhan.diachi
             tbMABN.ReadOnly = true;
             tbMABN.Text = dataviewBenhNhan.Rows[e.RowIndex].Cells[0].Value.ToString();
             tbHoTen.Text = dataviewBenhNhan.Rows[e.RowIndex].Cells[1].Value.ToString();
+            tbTuoi.Text = dataviewBenhNhan.Rows[e.RowIndex].Cells[2].Value.ToString();
+            cbGioiTInh.Text = dataviewBenhNhan.Rows[e.RowIndex].Cells[3].Value.ToString();
+            tbSDT.Text = dataviewBenhNhan.Rows[e.RowIndex].Cells[4].Value.ToString();
+            tbDiaChi.Text = dataviewBenhNhan.Rows[e.RowIndex].Cells[5].Value.ToString();
+            //LoadLichsu();
         }
 
         private void tbHoTen_TextChanged(object sender, EventArgs e)

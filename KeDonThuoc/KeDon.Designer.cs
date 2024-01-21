@@ -62,6 +62,7 @@
             label4 = new Label();
             label3 = new Label();
             listLichSu = new ListView();
+            columnHeader1 = new ColumnHeader();
             groupBox3 = new GroupBox();
             textBox1 = new TextBox();
             label25 = new Label();
@@ -348,12 +349,12 @@
             // cbGioiTInh
             // 
             cbGioiTInh.FormattingEnabled = true;
-            cbGioiTInh.Items.AddRange(new object[] { "Nam", "Nữ" });
+            cbGioiTInh.Items.AddRange(new object[] { "NAM", "NỮ" });
             cbGioiTInh.Location = new Point(176, 175);
             cbGioiTInh.Name = "cbGioiTInh";
             cbGioiTInh.Size = new Size(121, 29);
             cbGioiTInh.TabIndex = 2;
-            cbGioiTInh.Text = "Nam";
+            cbGioiTInh.Text = "NAM";
             cbGioiTInh.KeyPress += cbGioiTInh_KeyPress;
             // 
             // tbDiaChi
@@ -457,11 +458,16 @@
             // 
             // listLichSu
             // 
+            listLichSu.Columns.AddRange(new ColumnHeader[] { columnHeader1 });
             listLichSu.Location = new Point(1290, 12);
             listLichSu.Name = "listLichSu";
             listLichSu.Size = new Size(156, 271);
             listLichSu.TabIndex = 0;
             listLichSu.UseCompatibleStateImageBehavior = false;
+            // 
+            // columnHeader1
+            // 
+            columnHeader1.Text = "Lịch Sử";
             // 
             // groupBox3
             // 
@@ -975,5 +981,6 @@
         private TextBox textBox1;
         private Label label25;
         private Button btnNhapMoi;
+        private ColumnHeader columnHeader1;
     }
 }
