@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using System.Data.SqlClient;
 using Microsoft.Data.SqlClient;
 using Microsoft.VisualBasic;
+using System.Text.RegularExpressions;
 
 namespace KeDonThuoc
 {
@@ -103,21 +104,32 @@ namespace KeDonThuoc
         {
             tbMABN.BackColor = SystemColors.Info;
             tbHoTen.Focus();
+            btnLuu.Enabled = true;
         }
-
+        
         private void tbHoTen_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == 13)
             {
+                tbHoTen.Text = tbHoTen.Text.ToUpper();
                 cbGioiTInh.Focus();
             }
         }
 
         private void cbGioiTInh_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (e.KeyChar == 13)
+            if (e.KeyChar == 13 || e.KeyChar == 9)
             {
-                tbTuoi.Focus();
+                cbGioiTInh.Text = cbGioiTInh.Text.ToUpper();
+                if (cbGioiTInh.Text != "NỮ" && cbGioiTInh.Text != "NAM")
+                {
+                    MessageBox.Show("Vui lòng chọn lại giới tính");
+                    cbGioiTInh.Focus();
+                }
+                else
+                {
+                    tbTuoi.Focus();
+                }
             }
         }
 
@@ -125,7 +137,15 @@ namespace KeDonThuoc
         {
             if (e.KeyChar == 13)
             {
-                tbSDT.Focus();
+                if (tbTuoi.Text.Length == 10 || tbTuoi.Text == "" || tbTuoi.Text.Length == 2 || tbTuoi.Text.Length == 4 || tbTuoi.Text.Length == 1)
+                {
+                    tbSDT.Focus();
+                }
+                else 
+                {
+                    MessageBox.Show("Nhập lại tuổi");
+                    tbTuoi.Focus();
+                }
             }
         }
 
@@ -133,7 +153,14 @@ namespace KeDonThuoc
         {
             if (e.KeyChar == 13)
             {
-                tbDiaChi.Focus();
+                if (tbSDT.Text == "" || tbSDT.Text.Length == 9 || tbSDT.Text.Length == 10)
+                {
+                    tbDiaChi.Focus();
+                }
+                else {
+                    MessageBox.Show("Nhập lại số điện thoại");
+                    tbSDT.Focus();
+                }
             }
         }
 
@@ -144,10 +171,52 @@ namespace KeDonThuoc
                 btnLuu_Click(sender, e);
             }
         }
-
+        
+        public int TaoMABN()
+        {
+            using (SqlConnection connection = new SqlConnection(ConnectionString.connectionString))
+            {
+                string query = "select MAX(MABN) FROM BENHNHAN";
+                connection.Open();
+                SqlCommand command = new SqlCommand(query, connection);
+                command.ExecuteNonQuery();
+                int maxValue = (int)command.ExecuteScalar();
+                int newValue = maxValue + 1;
+                return newValue;
+                //return MABN_MOI = newValue;
+            }
+        }
+        //public int MABN_MOI;
         private void btnLuu_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("hI HI");
+            // nếu mã bn rỗng tạo mã bn mới
+            if (tbMABN.Text == "") 
+            {
+                int newValue = TaoMABN();
+                MessageBox.Show(newValue.ToString());
+            }
+            // tạo thêm lịch sử
+            else
+            {
+                
+            }
+            
+            // kiểm tra mã bn có chưa
+            /*string query = "insert into";
+            using (SqlConnection connection = new SqlConnection(ConnectionString.connectionString))
+            {
+                SqlCommand command = new SqlCommand(query, connection);
+                SqlDataReader reader = command.ExecuteReader();
+                // không tồn tại
+                if (!reader.Read())
+                {
+
+                }
+                else 
+                { 
+                
+                }
+            }*/
         }
 
         private void dataviewBenhNhan_MouseClick(object sender, MouseEventArgs e)
@@ -160,6 +229,11 @@ namespace KeDonThuoc
             tbMABN.ReadOnly = true;
             tbMABN.Text = dataviewBenhNhan.Rows[e.RowIndex].Cells[0].Value.ToString();
             tbHoTen.Text = dataviewBenhNhan.Rows[e.RowIndex].Cells[1].Value.ToString();
+        }
+
+        private void tbHoTen_TextChanged(object sender, EventArgs e)
+        {
+            
         }
     }
 }

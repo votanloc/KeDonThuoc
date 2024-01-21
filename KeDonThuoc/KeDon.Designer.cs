@@ -327,6 +327,7 @@
             // 
             // btnLuu
             // 
+            btnLuu.Enabled = false;
             btnLuu.Location = new Point(291, 225);
             btnLuu.Name = "btnLuu";
             btnLuu.Size = new Size(102, 36);
@@ -352,6 +353,7 @@
             cbGioiTInh.Name = "cbGioiTInh";
             cbGioiTInh.Size = new Size(121, 29);
             cbGioiTInh.TabIndex = 2;
+            cbGioiTInh.Text = "Nam";
             cbGioiTInh.KeyPress += cbGioiTInh_KeyPress;
             // 
             // tbDiaChi
@@ -386,6 +388,7 @@
             tbHoTen.Name = "tbHoTen";
             tbHoTen.Size = new Size(288, 29);
             tbHoTen.TabIndex = 1;
+            tbHoTen.TextChanged += tbHoTen_TextChanged;
             tbHoTen.KeyPress += tbHoTen_KeyPress;
             // 
             // tbMABN
@@ -420,9 +423,9 @@
             label6.AutoSize = true;
             label6.Location = new Point(508, 100);
             label6.Name = "label6";
-            label6.Size = new Size(44, 21);
+            label6.Size = new Size(77, 21);
             label6.TabIndex = 4;
-            label6.Text = "Tuổi";
+            label6.Text = "NS/Tuổi:";
             // 
             // label5
             // 
