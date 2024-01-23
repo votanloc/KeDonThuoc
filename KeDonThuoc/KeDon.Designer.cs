@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             groupBox1 = new GroupBox();
             dataviewBenhNhan = new DataGridView();
             button7 = new Button();
@@ -40,7 +41,6 @@
             dateTuNgay = new DateTimePicker();
             groupBox2 = new GroupBox();
             btnNhapMoi = new Button();
-            btnTaiKham = new Button();
             label9 = new Label();
             label10 = new Label();
             dateDangKy = new DateTimePicker();
@@ -64,7 +64,8 @@
             listLichSu = new ListView();
             columnHeader1 = new ColumnHeader();
             groupBox3 = new GroupBox();
-            textBox1 = new TextBox();
+            btnLuuChandoan = new Button();
+            tbChandoan = new TextBox();
             label25 = new Label();
             btnDanhMucBS = new Button();
             tbnInToaThuoc = new Button();
@@ -105,12 +106,14 @@
             label12 = new Label();
             cbBacSi = new ComboBox();
             label11 = new Label();
+            licenseContextBindingSource = new BindingSource(components);
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataviewBenhNhan).BeginInit();
             groupBox2.SuspendLayout();
             groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridView3).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dataviewICD).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)licenseContextBindingSource).BeginInit();
             SuspendLayout();
             // 
             // groupBox1
@@ -220,7 +223,6 @@
             // 
             groupBox2.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             groupBox2.Controls.Add(btnNhapMoi);
-            groupBox2.Controls.Add(btnTaiKham);
             groupBox2.Controls.Add(label9);
             groupBox2.Controls.Add(label10);
             groupBox2.Controls.Add(dateDangKy);
@@ -262,16 +264,6 @@
             btnNhapMoi.UseVisualStyleBackColor = true;
             btnNhapMoi.Click += btnNhapMoi_Click;
             // 
-            // btnTaiKham
-            // 
-            btnTaiKham.Location = new Point(394, 225);
-            btnTaiKham.Name = "btnTaiKham";
-            btnTaiKham.Size = new Size(110, 36);
-            btnTaiKham.TabIndex = 22;
-            btnTaiKham.Text = "Tái khám";
-            btnTaiKham.UseVisualStyleBackColor = true;
-            btnTaiKham.Click += btnTaiKham_Click;
-            // 
             // label9
             // 
             label9.AutoSize = true;
@@ -292,39 +284,41 @@
             // 
             // dateDangKy
             // 
-            dateDangKy.CustomFormat = "dd/MM/yyyy";
+            dateDangKy.CustomFormat = "dd/MM/yyyy  HH:mm";
             dateDangKy.Format = DateTimePickerFormat.Custom;
-            dateDangKy.Location = new Point(586, 35);
+            dateDangKy.Location = new Point(536, 37);
             dateDangKy.Name = "dateDangKy";
-            dateDangKy.Size = new Size(149, 29);
+            dateDangKy.Size = new Size(192, 29);
             dateDangKy.TabIndex = 19;
             // 
             // dateHIenTai
             // 
-            dateHIenTai.CustomFormat = "dd/MM/yyyy";
+            dateHIenTai.CustomFormat = "dd/MM/yyyy  HH:mm";
             dateHIenTai.Format = DateTimePickerFormat.Custom;
             dateHIenTai.Location = new Point(176, 37);
             dateHIenTai.Name = "dateHIenTai";
-            dateHIenTai.Size = new Size(149, 29);
+            dateHIenTai.Size = new Size(191, 29);
             dateHIenTai.TabIndex = 18;
             // 
             // btnXoa
             // 
-            btnXoa.Location = new Point(655, 225);
+            btnXoa.Location = new Point(540, 225);
             btnXoa.Name = "btnXoa";
-            btnXoa.Size = new Size(106, 36);
+            btnXoa.Size = new Size(145, 36);
             btnXoa.TabIndex = 17;
-            btnXoa.Text = "Xóa";
+            btnXoa.Text = "Xóa lượt khám";
             btnXoa.UseVisualStyleBackColor = true;
+            btnXoa.Click += btnXoa_Click;
             // 
             // btnCapNhat
             // 
-            btnCapNhat.Location = new Point(510, 225);
+            btnCapNhat.Location = new Point(407, 225);
             btnCapNhat.Name = "btnCapNhat";
             btnCapNhat.Size = new Size(114, 36);
             btnCapNhat.TabIndex = 16;
             btnCapNhat.Text = "Cập nhật";
             btnCapNhat.UseVisualStyleBackColor = true;
+            btnCapNhat.Click += btnCapNhat_Click;
             // 
             // btnLuu
             // 
@@ -348,6 +342,7 @@
             // 
             // cbGioiTInh
             // 
+            cbGioiTInh.DisplayMember = "Nam";
             cbGioiTInh.FormattingEnabled = true;
             cbGioiTInh.Items.AddRange(new object[] { "NAM", "NỮ" });
             cbGioiTInh.Location = new Point(176, 175);
@@ -355,6 +350,7 @@
             cbGioiTInh.Size = new Size(121, 29);
             cbGioiTInh.TabIndex = 2;
             cbGioiTInh.Text = "NAM";
+            cbGioiTInh.ValueMember = "Nam";
             cbGioiTInh.KeyPress += cbGioiTInh_KeyPress;
             // 
             // tbDiaChi
@@ -471,7 +467,8 @@
             // 
             // groupBox3
             // 
-            groupBox3.Controls.Add(textBox1);
+            groupBox3.Controls.Add(btnLuuChandoan);
+            groupBox3.Controls.Add(tbChandoan);
             groupBox3.Controls.Add(label25);
             groupBox3.Controls.Add(btnDanhMucBS);
             groupBox3.Controls.Add(tbnInToaThuoc);
@@ -522,13 +519,24 @@
             groupBox3.TabStop = false;
             groupBox3.Text = "THÔNG TIN TOA THUỐC";
             // 
-            // textBox1
+            // btnLuuChandoan
             // 
-            textBox1.Location = new Point(18, 79);
-            textBox1.Multiline = true;
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(307, 134);
-            textBox1.TabIndex = 59;
+            btnLuuChandoan.Location = new Point(130, 32);
+            btnLuuChandoan.Name = "btnLuuChandoan";
+            btnLuuChandoan.Size = new Size(102, 36);
+            btnLuuChandoan.TabIndex = 60;
+            btnLuuChandoan.Text = "Lưu";
+            btnLuuChandoan.UseVisualStyleBackColor = true;
+            btnLuuChandoan.Click += btnLuuChandoan_Click;
+            // 
+            // tbChandoan
+            // 
+            tbChandoan.Location = new Point(18, 79);
+            tbChandoan.Multiline = true;
+            tbChandoan.Name = "tbChandoan";
+            tbChandoan.Size = new Size(307, 134);
+            tbChandoan.TabIndex = 59;
+            tbChandoan.KeyPress += tbChandoan_KeyPress;
             // 
             // label25
             // 
@@ -608,6 +616,7 @@
             tbLoiDan.Name = "tbLoiDan";
             tbLoiDan.Size = new Size(307, 96);
             tbLoiDan.TabIndex = 50;
+            tbLoiDan.KeyPress += tbLoiDan_KeyPress;
             // 
             // label23
             // 
@@ -877,6 +886,10 @@
             label11.TabIndex = 0;
             label11.Text = "Bác Sĩ khám";
             // 
+            // licenseContextBindingSource
+            // 
+            licenseContextBindingSource.DataSource = typeof(System.ComponentModel.LicenseContext);
+            // 
             // KeDon
             // 
             AutoScaleDimensions = new SizeF(10F, 21F);
@@ -900,6 +913,7 @@
             groupBox3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridView3).EndInit();
             ((System.ComponentModel.ISupportInitialize)dataviewICD).EndInit();
+            ((System.ComponentModel.ISupportInitialize)licenseContextBindingSource).EndInit();
             ResumeLayout(false);
         }
 
@@ -938,7 +952,6 @@
         private TextBox textBox7;
         private Button button6;
         private TextBox textBox3;
-        private Button btnTaiKham;
         private ComboBox cbBacSi;
         private Label label11;
         private Button btnDanhMucICD;
@@ -978,9 +991,11 @@
         private CheckBox checkboxKhoaToa;
         private Button tbnInToaThuoc;
         private Button btnDanhMucBS;
-        private TextBox textBox1;
+        private TextBox tbChandoan;
         private Label label25;
         private Button btnNhapMoi;
         private ColumnHeader columnHeader1;
+        private Button btnLuuChandoan;
+        private BindingSource licenseContextBindingSource;
     }
 }
