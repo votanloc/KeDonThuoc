@@ -40,6 +40,7 @@
             label1 = new Label();
             dateTuNgay = new DateTimePicker();
             groupBox2 = new GroupBox();
+            tbMaKham = new TextBox();
             btnNhapMoi = new Button();
             label9 = new Label();
             label10 = new Label();
@@ -107,6 +108,8 @@
             cbBacSi = new ComboBox();
             label11 = new Label();
             licenseContextBindingSource = new BindingSource(components);
+            contextMenuStrip1 = new ContextMenuStrip(components);
+            label26 = new Label();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataviewBenhNhan).BeginInit();
             groupBox2.SuspendLayout();
@@ -222,6 +225,8 @@
             // groupBox2
             // 
             groupBox2.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            groupBox2.Controls.Add(label26);
+            groupBox2.Controls.Add(tbMaKham);
             groupBox2.Controls.Add(btnNhapMoi);
             groupBox2.Controls.Add(label9);
             groupBox2.Controls.Add(label10);
@@ -254,6 +259,13 @@
             groupBox2.TabStop = false;
             groupBox2.Text = "THÔNG TIN BÊN NHÂN";
             // 
+            // tbMaKham
+            // 
+            tbMaKham.Location = new Point(902, 37);
+            tbMaKham.Name = "tbMaKham";
+            tbMaKham.Size = new Size(186, 29);
+            tbMaKham.TabIndex = 24;
+            // 
             // btnNhapMoi
             // 
             btnNhapMoi.Location = new Point(164, 225);
@@ -285,6 +297,7 @@
             // dateDangKy
             // 
             dateDangKy.CustomFormat = "dd/MM/yyyy  HH:mm";
+            dateDangKy.Enabled = false;
             dateDangKy.Format = DateTimePickerFormat.Custom;
             dateDangKy.Location = new Point(536, 37);
             dateDangKy.Name = "dateDangKy";
@@ -890,10 +903,25 @@
             // 
             licenseContextBindingSource.DataSource = typeof(System.ComponentModel.LicenseContext);
             // 
+            // contextMenuStrip1
+            // 
+            contextMenuStrip1.Name = "contextMenuStrip1";
+            contextMenuStrip1.Size = new Size(61, 4);
+            // 
+            // label26
+            // 
+            label26.AutoSize = true;
+            label26.Location = new Point(813, 40);
+            label26.Name = "label26";
+            label26.Size = new Size(83, 21);
+            label26.TabIndex = 25;
+            label26.Text = "Mã Khám";
+            // 
             // KeDon
             // 
             AutoScaleDimensions = new SizeF(10F, 21F);
             AutoScaleMode = AutoScaleMode.Font;
+            AutoSize = true;
             ClientSize = new Size(1924, 1021);
             Controls.Add(groupBox3);
             Controls.Add(groupBox2);
@@ -997,5 +1025,8 @@
         private ColumnHeader columnHeader1;
         private Button btnLuuChandoan;
         private BindingSource licenseContextBindingSource;
+        private TextBox tbMaKham;
+        private ContextMenuStrip contextMenuStrip1;
+        private Label label26;
     }
 }
