@@ -53,7 +53,8 @@ namespace KeDonThuoc
                 "benhnhan.diachi," +
                 "lichsu.ngaylapphieu," +
                 "lichsu.chandoan," +
-                "lichsu.loidan " +
+                "lichsu.loidan ," +
+                "lichsu.makham " +
                 "from " +
                     "Benhnhan join lichsu on benhnhan.mabn = lichsu.mabn";
             using (SqlConnection connection = new SqlConnection(ConnectionString.connectionString))
@@ -112,6 +113,7 @@ namespace KeDonThuoc
             dataviewBenhNhan.Columns[6].Width = 70;
             dataviewBenhNhan.Columns[7].Visible = false;
             dataviewBenhNhan.Columns[8].Visible = false;
+            dataviewBenhNhan.Columns[9].Visible = false;
 
             dataviewBenhNhan.AllowUserToAddRows = false;
         }
@@ -137,6 +139,7 @@ namespace KeDonThuoc
             tbDiaChi.Text = "";
             tbHoTen.Focus();
             btnLuu.Enabled = true;
+            dateHIenTai.Value = DateTime.Now;
         }
 
         private void tbHoTen_KeyPress(object sender, KeyPressEventArgs e)
@@ -232,7 +235,7 @@ namespace KeDonThuoc
             using (SqlConnection connection = new SqlConnection(ConnectionString.connectionString))
             {
                 //string query = "select MAX(MABN) FROM BENHNHAN";
-                string query = "SELECT COUNT(*) FROM lichsu WHERE mabn = @mabn";
+                string query = "select count(mabn) from LichSu where mabn = @mabn";
                 connection.Open();
                 SqlCommand command = new SqlCommand(query, connection);
                 command.Parameters.AddWithValue("@mabn", tbMABN.Text.Trim());
@@ -277,19 +280,15 @@ namespace KeDonThuoc
                 tbMABN.Text = new_mabn.ToString();
                 using (SqlConnection connection = new SqlConnection(ConnectionString.connectionString))
                 {
+                    DateTime today = DateTime.Now;
+                    string giohientai = today.ToString("yyyyMMdd-HH:mm:ss");
+                    string query = "insert into lichsu (makham,mabn) values (@makham,@mabn)";
                     connection.Open();
-                    int new_makham = TaoMaKham();
-                    string date = DateTime.Now.ToString("yyyyMMdd");
-                    string makham = "KB-" + date + "-" + new_makham.ToString();
-                    string maICD_benhnhan = "BN-" + tbMABN.Text + date + new_makham;
-                    string maToaThuoc = "TT-" + tbMABN.Text + date + new_makham;
-                    string query = "insert into lichsu(makham,mabn,matoaicd,matoathuoc,ngaylapphieu) values ('" + makham + "',@mabn,'" + maICD_benhnhan + "','" + maToaThuoc + "','" + dateHIenTai.Text + "')";
-                    MessageBox.Show(query);
-                    SqlCommand command = new SqlCommand(query, connection);
-                    command.Parameters.AddWithValue("@mabn", tbMABN.Text.Trim());
-                    command.ExecuteNonQuery();
+                    SqlCommand command1 = new SqlCommand(query, connection);
+                    command1.Parameters.AddWithValue("@makham", "MK-" + giohientai + "-1");
+                    command1.Parameters.AddWithValue("@mabn", tbMABN.Text.Trim());
+                    command1.ExecuteNonQuery();
                     connection.Close();
-                    tbMaKham.Text = makham.ToString();
                 }
                 dateDangKy.Value = DateTime.Now;
             }
@@ -311,15 +310,14 @@ namespace KeDonThuoc
 
                 using (SqlConnection connection = new SqlConnection(ConnectionString.connectionString))
                 {
+                    connection.Open();
                     int new_makham = TaoMaKham();
-                    string date = DateTime.Now.ToString("yyyyMMdd");
-                    string makham = "KB-" + date + "-" + new_makham.ToString();
-                    string maICD_benhnhan = "BN-" + tbMABN.Text + date + new_makham;
-                    string maToaThuoc = "TT-" + tbMABN.Text + date + new_makham;
-                    string query = "insert into lichsu(makham,mabn,matoaICD,MATOATHUOC,BS,NGAYLAPPHIEU) " +
-                        "VALUES ('" + makham + "', '" + tbMABN.Text + "','" + maICD_benhnhan + "','" + maToaThuoc + "','" + cbBacSi.Text + "','" + dateDangKy + "')";
-                    MessageBox.Show(query);
-                    SqlCommand command = new SqlCommand(query, connection);
+                    DateTime today = DateTime.Now;
+                    string giohientai = today.ToString("yyyyMMdd-HH:mm:ss");
+                    string query = "insert into lichsu(makham,mabn) VALUES (@makham,@mabn) ";
+                    SqlCommand command = new(query, connection);
+                    command.Parameters.AddWithValue("@makham", "MK-" + giohientai + "-" + new_makham);
+                    command.Parameters.AddWithValue("@mabn", tbMABN.Text);
                     command.ExecuteNonQuery();
                     connection.Close();
                 }
@@ -383,6 +381,7 @@ namespace KeDonThuoc
             dateDangKy.Text = dataviewBenhNhan.Rows[e.RowIndex].Cells[6].Value.ToString();
             tbChandoan.Text = dataviewBenhNhan.Rows[e.RowIndex].Cells[7].Value.ToString();
             tbLoiDan.Text = dataviewBenhNhan.Rows[e.RowIndex].Cells[8].Value.ToString();
+            tbMaKham.Text = dataviewBenhNhan.Rows[e.RowIndex].Cells[9].Value.ToString();
             //LoadLichsu();
         }
 
@@ -393,20 +392,27 @@ namespace KeDonThuoc
 
         private void btnCapNhat_Click(object sender, EventArgs e)
         {
-            using (SqlConnection connection = new SqlConnection(ConnectionString.connectionString))
+            if (tbMABN.Text.Length == 0)
             {
-                string query = "update benhnhan set hoten = @hoten, tuoi = @tuoi, gioitinh = @gioitinh, sdt = @sdt, diachi = @diachi where mabn = @mabn";
-                connection.Open();
-                SqlCommand command = new SqlCommand(query, connection);
-                command.Parameters.AddWithValue("@mabn", tbMABN.Text);
-                command.Parameters.AddWithValue("@hoten", tbHoTen.Text.Trim());
-                command.Parameters.AddWithValue(@"tuoi", tbTuoi.Text.Trim());
-                command.Parameters.AddWithValue(@"gioitinh", cbGioiTInh.Text.Trim());
-                command.Parameters.AddWithValue(@"sdt", tbSDT.Text.Trim());
-                command.Parameters.AddWithValue(@"diachi", tbDiaChi.Text.Trim());
-                command.ExecuteNonQuery();
-                connection.Close();
-                LoadDanhSach();
+                return;
+            }
+            else
+            {
+                using (SqlConnection connection = new SqlConnection(ConnectionString.connectionString))
+                {
+                    string query = "update benhnhan set hoten = @hoten, tuoi = @tuoi, gioitinh = @gioitinh, sdt = @sdt, diachi = @diachi where mabn = @mabn";
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(query, connection);
+                    command.Parameters.AddWithValue("@mabn", tbMABN.Text);
+                    command.Parameters.AddWithValue("@hoten", tbHoTen.Text.Trim());
+                    command.Parameters.AddWithValue(@"tuoi", tbTuoi.Text.Trim());
+                    command.Parameters.AddWithValue(@"gioitinh", cbGioiTInh.Text.Trim());
+                    command.Parameters.AddWithValue(@"sdt", tbSDT.Text.Trim());
+                    command.Parameters.AddWithValue(@"diachi", tbDiaChi.Text.Trim());
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                    LoadDanhSach();
+                }
             }
         }
 
